@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: zillow-fsbo-scraper
+    env: node
+    buildCommand: npm install && pip3 install -r python-requirements.txt
+    startCommand: node server.js
+    plan: free
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NODE_OPTIONS
+        value: --max-old-space-size=512
+      - key: RENDER
+        value: 'true'
+    healthCheckPath: /
+    autoDeploy: false

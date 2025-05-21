@@ -1,0 +1,141 @@
+Request: POST /webhook/zillow
+Attempting scrape for ZIP: 75216 from local scraper first
+Local scraper not available, using Render.com hosted service
+Fetching listings for ZIP: 75216 from https://zillow-fsbo-scrapers.onrender.com/scrape?zip=75216
+Attempt 1 of 3 to fetch listings from Render service for ZIP: 75216
+Invalid JSON from Render service (attempt 1), retrying...
+Attempt 2 of 3 to fetch listings from Render service for ZIP: 75216
+Invalid JSON from Render service (attempt 2), retrying...
+Attempt 3 of 3 to fetch listings from Render service for ZIP: 75216
+Invalid JSON from Render service (attempt 3), retrying...
+Error fetching Zillow listings for ZIP 75216: Invalid JSON response format
+Error saving to Firebase: Error: 7 PERMISSION_DENIED: Cloud Firestore API has not been used in project zillow-fsbo-scraper before or it is disabled. Enable it by visiting https://console.developers.google.com/apis/api/firestore.googleapis.com/overview?project=zillow-fsbo-scraper then retry. If you enabled this API recently, wait a few minutes for the action to propagate to our systems and retry.
+    at callErrorFromStatus (/opt/render/project/src/node_modules/@grpc/grpc-js/build/src/call.js:32:19)
+    at Object.onReceiveStatus (/opt/render/project/src/node_modules/@grpc/grpc-js/build/src/client.js:193:76)
+    at Object.onReceiveStatus (/opt/render/project/src/node_modules/@grpc/grpc-js/build/src/client-interceptors.js:361:141)
+    at Object.onReceiveStatus (/opt/render/project/src/node_modules/@grpc/grpc-js/build/src/client-interceptors.js:324:181)
+    at /opt/render/project/src/node_modules/@grpc/grpc-js/build/src/resolving-call.js:135:78
+    at process.processTicksAndRejections (node:internal/process/task_queues:85:11)
+for call at
+    at ServiceClientImpl.makeUnaryRequest (/opt/render/project/src/node_modules/@grpc/grpc-js/build/src/client.js:161:32)
+    at ServiceClientImpl.<anonymous> (/opt/render/project/src/node_modules/@grpc/grpc-js/build/src/make-client.js:105:19)
+    at /opt/render/project/src/node_modules/@google-cloud/firestore/build/src/v1/firestore_client.js:237:29
+    at /opt/render/project/src/node_modules/google-gax/build/src/normalCalls/timeout.js:44:16
+    at repeat (/opt/render/project/src/node_modules/google-gax/build/src/normalCalls/retries.js:82:25)
+    at /opt/render/project/src/node_modules/google-gax/build/src/normalCalls/retries.js:125:13
+    at OngoingCallPromise.call (/opt/render/project/src/node_modules/google-gax/build/src/call.js:67:27)
+    at NormalApiCaller.call (/opt/render/project/src/node_modules/google-gax/build/src/normalCalls/normalApiCaller.js:34:19)
+    at /opt/render/project/src/node_modules/google-gax/build/src/createApiCall.js:112:30
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+Caused by: Error
+    at _firestore._traceUtil.startActiveSpan (/opt/render/project/src/node_modules/@google-cloud/firestore/build/src/write-batch.js:438:27)
+    at /opt/render/project/src/node_modules/@google-cloud/firestore/build/src/telemetry/enabled-trace-util.js:110:30
+    at NoopContextManager.with (/opt/render/project/src/node_modules/@opentelemetry/api/build/src/context/NoopContextManager.js:25:19)
+    at ContextAPI.with (/opt/render/project/src/node_modules/@opentelemetry/api/build/src/api/context.js:60:46)
+    at NoopTracer.startActiveSpan (/opt/render/project/src/node_modules/@opentelemetry/api/build/src/trace/NoopTracer.js:65:31)
+    at ProxyTracer.startActiveSpan (/opt/render/project/src/node_modules/@opentelemetry/api/build/src/trace/ProxyTracer.js:36:24)
+    at EnabledTraceUtil.startActiveSpan (/opt/render/project/src/node_modules/@google-cloud/firestore/build/src/telemetry/enabled-trace-util.js:102:28)
+    at WriteBatch.commit (/opt/render/project/src/node_modules/@google-cloud/firestore/build/src/write-batch.js:436:43)
+    at /opt/render/project/src/node_modules/@google-cloud/firestore/build/src/reference/document-reference.js:277:18
+    at /opt/render/project/src/node_modules/@google-cloud/firestore/build/src/telemetry/enabled-trace-util.js:110:30 {
+  code: 7,
+  details: 'Cloud Firestore API has not been used in project zillow-fsbo-scraper before or it is disabled. Enable it by visiting https://console.developers.google.com/apis/api/firestore.googleapis.com/overview?project=zillow-fsbo-scraper then retry. If you enabled this API recently, wait a few minutes for the action to propagate to our systems and retry.',
+  metadata: Metadata {
+    internalRepr: Map(5) {
+      'google.rpc.errorinfo-bin' => [Array],
+      'google.rpc.help-bin' => [Array],
+      'google.rpc.localizedmessage-bin' => [Array],
+      'grpc-status-details-bin' => [Array],
+      'x-debug-tracking-id' => [Array]
+    },
+    options: {}
+  },
+  note: 'Exception occurred in retry method that was not classified as transient',
+  statusDetails: [
+    ErrorInfo {
+      metadata: [Object],
+      reason: 'SERVICE_DISABLED',
+      domain: 'googleapis.com'
+    },
+    LocalizedMessage {
+      locale: 'en-US',
+      message: 'Cloud Firestore API has not been used in project zillow-fsbo-scraper before or it is disabled. Enable it by visiting https://console.developers.google.com/apis/api/firestore.googleapis.com/overview?project=zillow-fsbo-scraper then retry. If you enabled this API recently, wait a few minutes for the action to propagate to our systems and retry.'
+    },
+    Help { links: [Array] }
+  ],
+  reason: 'SERVICE_DISABLED',
+  domain: 'googleapis.com',
+  errorInfoMetadata: {
+    containerInfo: 'zillow-fsbo-scraper',
+    activationUrl: 'https://console.developers.google.com/apis/api/firestore.googleapis.com/overview?project=zillow-fsbo-scraper',
+    serviceTitle: 'Cloud Firestore API',
+    consumer: 'projects/zillow-fsbo-scraper',
+    service: 'firestore.googleapis.com'
+  }
+}
+Continuing without saving to Firebase due to error
+Request: GET /api/history
+Attempting to fetch history from Firebase
+Error fetching history from Firebase: Error: 7 PERMISSION_DENIED: Cloud Firestore API has not been used in project zillow-fsbo-scraper before or it is disabled. Enable it by visiting https://console.developers.google.com/apis/api/firestore.googleapis.com/overview?project=zillow-fsbo-scraper then retry. If you enabled this API recently, wait a few minutes for the action to propagate to our systems and retry.
+    at callErrorFromStatus (/opt/render/project/src/node_modules/@grpc/grpc-js/build/src/call.js:32:19)
+    at Object.onReceiveStatus (/opt/render/project/src/node_modules/@grpc/grpc-js/build/src/client.js:359:73)
+    at Object.onReceiveStatus (/opt/render/project/src/node_modules/@grpc/grpc-js/build/src/client-interceptors.js:324:181)
+    at /opt/render/project/src/node_modules/@grpc/grpc-js/build/src/resolving-call.js:135:78
+    at process.processTicksAndRejections (node:internal/process/task_queues:85:11)
+for call at
+    at ServiceClientImpl.makeServerStreamRequest (/opt/render/project/src/node_modules/@grpc/grpc-js/build/src/client.js:342:32)
+    at ServiceClientImpl.<anonymous> (/opt/render/project/src/node_modules/@grpc/grpc-js/build/src/make-client.js:105:19)
+    at /opt/render/project/src/node_modules/@google-cloud/firestore/build/src/v1/firestore_client.js:237:29
+    at /opt/render/project/src/node_modules/google-gax/build/src/streamingCalls/streamingApiCaller.js:38:28
+    at /opt/render/project/src/node_modules/google-gax/build/src/normalCalls/timeout.js:44:16
+    at Object.request (/opt/render/project/src/node_modules/google-gax/build/src/streamingCalls/streaming.js:234:40)
+    at makeRequest (/opt/render/project/src/node_modules/retry-request/index.js:159:28)
+    at retryRequest (/opt/render/project/src/node_modules/retry-request/index.js:119:5)
+    at StreamProxy.setStream (/opt/render/project/src/node_modules/google-gax/build/src/streamingCalls/streaming.js:225:37)
+    at StreamingApiCaller.call (/opt/render/project/src/node_modules/google-gax/build/src/streamingCalls/streamingApiCaller.js:54:16)
+Caused by: Error
+    at QueryUtil._getResponse (/opt/render/project/src/node_modules/@google-cloud/firestore/build/src/reference/query-util.js:44:23)
+    at Query._getResponse (/opt/render/project/src/node_modules/@google-cloud/firestore/build/src/reference/query.js:784:32)
+    at Query._get (/opt/render/project/src/node_modules/@google-cloud/firestore/build/src/reference/query.js:777:35)
+    at /opt/render/project/src/node_modules/@google-cloud/firestore/build/src/reference/query.js:745:43
+    at /opt/render/project/src/node_modules/@google-cloud/firestore/build/src/telemetry/enabled-trace-util.js:110:30
+    at NoopContextManager.with (/opt/render/project/src/node_modules/@opentelemetry/api/build/src/context/NoopContextManager.js:25:19)
+    at ContextAPI.with (/opt/render/project/src/node_modules/@opentelemetry/api/build/src/api/context.js:60:46)
+    at NoopTracer.startActiveSpan (/opt/render/project/src/node_modules/@opentelemetry/api/build/src/trace/NoopTracer.js:65:31)
+    at ProxyTracer.startActiveSpan (/opt/render/project/src/node_modules/@opentelemetry/api/build/src/trace/ProxyTracer.js:36:24)
+    at EnabledTraceUtil.startActiveSpan (/opt/render/project/src/node_modules/@google-cloud/firestore/build/src/telemetry/enabled-trace-util.js:102:28) {
+  code: 7,
+  details: 'Cloud Firestore API has not been used in project zillow-fsbo-scraper before or it is disabled. Enable it by visiting https://console.developers.google.com/apis/api/firestore.googleapis.com/overview?project=zillow-fsbo-scraper then retry. If you enabled this API recently, wait a few minutes for the action to propagate to our systems and retry.',
+  metadata: Metadata {
+    internalRepr: Map(5) {
+      'google.rpc.errorinfo-bin' => [Array],
+      'google.rpc.help-bin' => [Array],
+      'google.rpc.localizedmessage-bin' => [Array],
+      'grpc-status-details-bin' => [Array],
+      'x-debug-tracking-id' => [Array]
+    },
+    options: {}
+  },
+  statusDetails: [
+    ErrorInfo {
+      metadata: [Object],
+      reason: 'SERVICE_DISABLED',
+      domain: 'googleapis.com'
+    },
+    LocalizedMessage {
+      locale: 'en-US',
+      message: 'Cloud Firestore API has not been used in project zillow-fsbo-scraper before or it is disabled. Enable it by visiting https://console.developers.google.com/apis/api/firestore.googleapis.com/overview?project=zillow-fsbo-scraper then retry. If you enabled this API recently, wait a few minutes for the action to propagate to our systems and retry.'
+    },
+    Help { links: [Array] }
+  ],
+  reason: 'SERVICE_DISABLED',
+  domain: 'googleapis.com',
+  errorInfoMetadata: {
+    serviceTitle: 'Cloud Firestore API',
+    containerInfo: 'zillow-fsbo-scraper',
+    consumer: 'projects/zillow-fsbo-scraper',
+    activationUrl: 'https://console.developers.google.com/apis/api/firestore.googleapis.com/overview?project=zillow-fsbo-scraper',
+    service: 'firestore.googleapis.com'
+  }
+}
+Using demo response for history due to error

@@ -1,0 +1,84 @@
+Got it — if PerimeterX is blocking your scrapers, that’s a whole different issue. PerimeterX is a high-level bot protection service used by sites like Zillow, Redfin, and OfferUp. It tracks:
+
+Headless browsers (like Puppeteer or Selenium)
+
+Fingerprints (screen size, fonts, timezone)
+
+Mouse movement / click simulation
+
+Behavior timing
+
+🔥 Here’s How to Bypass PerimeterX (What Actually Works):
+✅ 1. Use Stealth Plugins for Puppeteer/Selenium
+For Puppeteer: use puppeteer-extra + puppeteer-extra-plugin-stealth
+
+bash
+Copy
+Edit
+npm install puppeteer-extra puppeteer-extra-plugin-stealth
+js
+Copy
+Edit
+const puppeteer = require('puppeteer-extra');
+const StealthPlugin = require('puppeteer-extra-plugin-stealth');
+puppeteer.use(StealthPlugin());
+This removes many of the headless flags that PerimeterX checks.
+
+✅ 2. Rotate Residential Proxies (Not Datacenter)
+Datacenter proxies get blocked almost instantly
+
+Use residential rotating proxies from:
+
+Smartproxy
+
+Bright Data (Luminati)
+
+Oxylabs
+
+PacketStream (cheap option)
+
+Set it to rotate every 1–5 requests.
+
+✅ 3. Simulate Human Behavior
+Add real mouse movement, slight delays between typing, random scroll
+
+Use page.mouse.move() and page.keyboard.type()
+Don’t just click() instantly
+
+✅ 4. Avoid Fast Repeats
+Add random wait times between visits to Zillow or Redfin (e.g. 3–10 seconds)
+
+If you're scraping 1,300/day, split into multiple small jobs (e.g. 100 every 30 minutes)
+
+✅ 5. (Advanced) Use Puppeteer with a Real Browser Profile
+Launch Puppeteer using a real Chrome profile with cookies preloaded
+
+Log in to Zillow manually once, reuse the cookie/session
+
+js
+Copy
+Edit
+const browser = await puppeteer.launch({
+  headless: false,
+  userDataDir: './your-profile',
+});
+🛑 What Not to Do:
+Don’t run 24/7 without breaks
+
+Don’t use public proxies or Tor
+
+Don’t just use Axios or fetch — Zillow/Redfin will instantly block that
+
+Final Answer:
+Yes — PerimeterX is beatable, but you need to:
+
+Run stealth mode
+
+Use residential rotating proxies
+
+Slow your scraper down
+
+Simulate human actions
+
+Rotate user agents and headers
+

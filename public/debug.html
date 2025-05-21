@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zillow FSBO Scraper - Advanced Debug</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      padding: 20px;
+      background-color: #f8f9fa;
+    }
+    .debug-panel {
+      height: 400px;
+      overflow-y: auto;
+      background-color: #212529;
+      color: #6c757d;
+      font-family: monospace;
+      padding: 10px;
+      border-radius: 5px;
+    }
+    .success { color: #28a745; }
+    .error { color: #dc3545; }
+    .warning { color: #ffc107; }
+    .info { color: #17a2b8; }
+    .captcha { color: #e83e8c; }
+    .navigation { color: #6f42c1; }
+    .spinner-container {
+      display: none;
+    }
+    .property-card {
+      margin-bottom: 15px;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .property-img {
+      height: 180px;
+      background-color: #e9ecef;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #adb5bd;
+    }
+    .property-details {
+      padding: 15px;
+    }
+    .property-address {
+      font-weight: 600;
+      margin-bottom: 5px;
+      font-size: 1.1rem;
+    }
+    .property-price {
+      font-weight: 700;
+      color: #0d6efd;
+      font-size: 1.3rem;
+      margin-bottom: 10px;
+    }
+    .property-meta {
+      display: flex;
+      gap: 15px;
+      color: #6c757d;
+      margin-bottom: 10px;
+    }
+    .meta-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .debug-options {
+      background: #fff;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 class="mb-4">Zillow FSBO Scraper - Advanced Debugging</h1>
+    
+    <div class="debug-options">
+      <div class="row mb-3">
+        <div class="col-md-4">
+          <label for="zipCode" class="form-label">ZIP Code</label>
+          <input type="text" class="form-control" id="zipCode" placeholder="90210" maxlength="5" pattern="\d{5}">
+        </div>
+        <div class="col-md-8">
+          <label for="urlType" class="form-label">URL Type</label>
+          <select class="form-select" id="urlType">
+            <option value="simple">Simple (Less CAPTCHA chance)</option>
+            <option value="fsbo">FSBO Specific</option>
+            <option value="complex">Complex with Filters</option>
+          </select>
+        </div>
+      </div>
+      <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+        <button type="button" class="btn btn-primary" id="startScrapeBtn">Start Scraping</button>
+        <button type="button" class="btn btn-secondary" id="clearLogBtn">Clear Logs</button>
+      </div>
+    </div>
+    
+    <div class="row">
+      <div class="col-12">
+        <h3>Debug Log</h3>
+        <div class="debug-panel" id="debugLog">
+          <div class="info">Zillow FSBO Scraper ready. Enter a ZIP code and click Start Scraping...</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="spinner-container text-center my-4" id="loadingSpinner">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <p class="mt-2">Scraping in progress, this may take up to 60 seconds...</p>
+    </div>
+    
+    <div class="row mt-4" id="resultsContainer" style="display: none;">
+      <div class="col-12">
+        <h3>Scraping Results</h3>
+        <div class="alert alert-info" id="resultsStats">
+          No results yet
+        </div>
+        <div id="listings" class="row"></div>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const debugLog = document.getElementById('debugLog');
+      const startScrapeBtn = document.getElementById('startScrapeBtn');
+      const clearLogBtn = document.getElementById('clearLogBtn');
+      const zipCodeInput = document.getElementById('zipCode');
+      const urlTypeSelect = document.getElementById('urlType');
+      const loadingSpinner = document.getElementById('loadingSpinner');
+      const resultsContainer = document.getElementById('resultsContainer');
+      const resultsStats = document.getElementById('resultsStats');
+      const listingsContainer = document.getElementById('listings');
+      
+      function logMessage(message, type = 'info') {
+        const logEntry = document.createElement('div');
+        logEntry.className = type;
+        logEntry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+        debugLog.appendChild(logEntry);
+        debugLog.scrollTop = debugLog.scrollHeight;
+      }
+      
+      clearLogBtn.addEventListener('click', () => {
+        debugLog.innerHTML = '';
+        logMessage('Logs cleared', 'info');
+      });
+      
+      startScrapeBtn.addEventListener('click', async () => {
+        const zipCode = zipCodeInput.value.trim();
+        if (!zipCode.match(/^\d{5}$/)) {
+          logMessage('Please enter a valid 5-digit ZIP code', 'error');
+          return;
+        }
+        
+        const urlType = urlTypeSelect.value;
+        
+        // Reset UI
+        loadingSpinner.style.display = 'block';
+        resultsContainer.style.display = 'none';
+        listingsContainer.innerHTML = '';
+        
+        logMessage(`Starting scrape for ZIP code: ${zipCode} using URL type: ${urlType}`, 'info');
+        
+        try {
+          // Call the scraper API
+          logMessage('Sending request to scraper...', 'info');
+          
+          // Add URL type as a query parameter if not using the simple default
+          let apiUrl = `/api/scrape/${zipCode}`;
+          if (urlType !== 'simple') {
+            apiUrl += `?urlType=${urlType}`;
+          }
+          
+          const response = await fetch(apiUrl);
+          const data = await response.json();
+          
+          loadingSpinner.style.display = 'none';
+          resultsContainer.style.display = 'block';
+          
+          if (data.error) {
+            logMessage(`Error: ${data.message}`, 'error');
+            
+            if (data.technicalDetails) {
+              logMessage(`Technical details: ${data.technicalDetails}`, 'error');
+            }
+            
+            if (data.error === 'CAPTCHA_CHALLENGE') {
+              logMessage('CAPTCHA detection triggered. Check server logs for details.', 'captcha');
+            }
+            
+            resultsStats.className = 'alert alert-danger';
+            resultsStats.textContent = `Error: ${data.message}`;
+            
+            if (data.possibleSolutions) {
+              const solutionsList = document.createElement('ul');
+              data.possibleSolutions.forEach(solution => {
+                const li = document.createElement('li');
+                li.textContent = solution;
+                solutionsList.appendChild(li);
+              });
+              
+              resultsStats.appendChild(document.createElement('p'));
+              resultsStats.appendChild(document.createTextNode('Possible solutions:'));
+              resultsStats.appendChild(solutionsList);
+            }
+          } else {
+            logMessage(`Scrape successful! Found ${data.count} listings.`, 'success');
+            
+            resultsStats.className = 'alert alert-success';
+            resultsStats.textContent = `Found ${data.count} listings for ZIP code ${zipCode}`;
+            
+            if (data.count > 0) {
+              data.listings.forEach(listing => {
+                // Create property card
+                const card = document.createElement('div');
+                card.className = 'col-md-6 col-lg-4 mb-4';
+                
+                card.innerHTML = `
+                  <div class="property-card">
+                    <div class="property-img">
+                      <i class="bi bi-house"></i> House Image Placeholder
+                    </div>
+                    <div class="property-details">
+                      <div class="property-address">${listing.address}</div>
+                      <div class="property-price">${listing.price}</div>
+                      <div class="property-meta">
+                        <div class="meta-item">
+                          <i class="bi bi-door-closed"></i> ${listing.beds} beds
+                        </div>
+                        <div class="meta-item">
+                          <i class="bi bi-droplet"></i> ${listing.baths} baths
+                        </div>
+                      </div>
+                      ${listing.link ? `<a href="${listing.link}" target="_blank" class="btn btn-sm btn-outline-primary">View on Zillow</a>` : ''}
+                    </div>
+                  </div>
+                `;
+                
+                listingsContainer.appendChild(card);
+              });
+            } else {
+              listingsContainer.innerHTML = '<div class="col-12"><div class="alert alert-warning">No listings found for this ZIP code</div></div>';
+            }
+          }
+        } catch (error) {
+          loadingSpinner.style.display = 'none';
+          logMessage(`Fetch error: ${error.message}`, 'error');
+          
+          resultsContainer.style.display = 'block';
+          resultsStats.className = 'alert alert-danger';
+          resultsStats.textContent = `An error occurred while communicating with the server: ${error.message}`;
+        }
+      });
+      
+      // Allow Enter key to start the scrape
+      zipCodeInput.addEventListener('keyup', function(event) {
+        if (event.key === 'Enter') {
+          startScrapeBtn.click();
+        }
+      });
+    });
+  </script>
+  
+  <!-- Bootstrap icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+</body>
+</html>
